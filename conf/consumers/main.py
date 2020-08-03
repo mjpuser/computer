@@ -27,7 +27,7 @@ async def main():
   channel = await conn.channel()
   c = consumer.Consumer()
   tag = await channel.basic_consume(c.queue, ack(c.consume))
-  logging.info(f'Started {c} consumer binded to {c.queue} queue')
+  logging.info(f'Started {type(c).__name__} consumer binded to {c.queue} queue')
 
 
 if __name__ == '__main__':

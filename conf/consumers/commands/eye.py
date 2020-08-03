@@ -1,26 +1,27 @@
 import logging
-from multiprocessing import shared_memory
+import redis
 
-
-offset = shared_memory.SharedMemory(
-  'computer_offset', create=True, size=8)
 
 logging.getLogger().setLevel(logging.INFO)
 
+redis_client = redis.Redis(host='redis', port=6379, db=0)
+x, y = redis_client.mget('offset_x', 'offset_y')
+x = int(x or '0')
+y = int(y or '0')
 
 def update_shared_state(fn):
   def wrapper(*args, **kwargs):
     logging.info(args)
     state = fn(*args, **kwargs)
-
+    redis_client.mset({'offset_x': state['x'], 'offset_y': state['y']})
 
   return wrapper
 
 
 class Eye:
   state = {
-    'x': 0,
-    'y': 0,
+    'x': x,
+    'y': y,
   }
 
   def __init__(self, x_max=200, y_max=200):

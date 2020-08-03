@@ -1,15 +1,10 @@
 #!/usr/bin/env python3
 
-import multiprocessing
+import redis
 import sys
 import numpy as np
 
-
-offset = multiprocessing.shared_memory.SharedMemory(
-  'computer_offset', create=False, size=8)
-
-
-BYTES_PER_PIXEL = 1
+redis_client = redis.Redis(host='localhost', port=6379, db=0)
 
 
 class Dimensions:
@@ -22,11 +17,17 @@ class Dimensions:
     return self.x * self.y
 
 
+def get_offset():
+  x, y = redis_client.mget('offset_x', 'offset_y')
+  return int(x), int(y)
+
+
 def transform(frame, i, o):
   mask = np.ndarray((i.x, i.y))
   mask.fill(1)
   roi = np.zeros((o.x, o.y)) # region of interest
-  mask[offset.y:offset.y + o.y, offset.x:offset.x + o.x] = roi
+  x, y = get_offset()
+  mask[y:y + o.y, x:x + o.x] = roi
   return np.ma.masked_array(frame, mask).compressed()
 
 
