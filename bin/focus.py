@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
-# import multiprocessing
+import multiprocessing
 import sys
 import numpy as np
 
 
 offset = multiprocessing.shared_memory.SharedMemory(
-  'computer_offset', create=True, size=8)
+  'computer_offset', create=False, size=8)
 
 
 BYTES_PER_PIXEL = 1
