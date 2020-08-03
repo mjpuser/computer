@@ -15,7 +15,7 @@ def ack(func):
     try:
       await func(message)
     except Exception as e:
-      logging.error(f'{message.header.properties.message_id} - {e}')
+      logging.info('Rejecting message')
       await message.channel.basic_reject(message.delivery.delivery_tag, requeue=False)
     else:
       await message.channel.basic_ack(message.delivery.delivery_tag)
