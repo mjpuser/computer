@@ -8,6 +8,7 @@ redis_client = redis.Redis(host='redis', port=6379, db=0)
 x, y = redis_client.mget('offset_x', 'offset_y')
 x = int(x or '0')
 y = int(y or '0')
+redis_client.mset({'offset_x': x, 'offset_y': y})
 
 def update_shared_state(fn):
   def wrapper(*args, **kwargs):
