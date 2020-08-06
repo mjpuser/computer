@@ -5,9 +5,11 @@
 # Usage
 # bin/run.sh 100x100 50x50
 
+size=3360x2100
+output=100x100
 
 ffplay \
+  -pixel_format 0rgb \
+  -video_size $output \
   -f rawvideo \
-  -pix_fmt gray \
-  -video_size $2 \
-  <(bin/capture.sh $1 | bin/focus.py $1 $2)
+  <(bin/capture.sh | bin/focus.py $size $output)
